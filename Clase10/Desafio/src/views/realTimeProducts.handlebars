@@ -1,0 +1,61 @@
+<div>
+  <h2>Realtime Products using websocket</h2>
+</div>
+<div>
+  <span>Add a title</span> <input type="text" id="title">
+</div>
+<div>
+  <span>Add a description</span> <input type="text" id="description">
+</div>
+<div>
+  <span>Add a code</span> <input type="text" id="code">
+</div>
+<div>
+  <span>Add a price</span> <input type="number" id="price">
+</div>
+<div>
+  <span>Add a status</span> <input type="text" id="status">
+</div>
+<div>
+  <span>Add stock</span> <input type="number" id="stock">
+</div>
+<div>
+  <span>Add a category</span> <input type="text" id="category">
+</div>
+
+
+<div>
+  <button id="addProductButton">Add Product</button>
+</div>
+<hr/>
+<div id="products"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/index.js"></script>
+
+<script>
+
+    function addProduct() {
+      const titleField = document.getElementById('title');
+      const descriptionField = document.getElementById('description');
+      const codeField = document.getElementById('code');
+      const priceField = document.getElementById('price');
+      const statusField = document.getElementById('status');
+      const stockField = document.getElementById('stock');
+      const categoryField = document.getElementById('category');
+
+      const product = {
+        title: titleField.value,
+        description: descriptionField.value,
+        code: codeField.value,
+        price: priceField.value,
+        status: statusField.value,
+        stock: stockField.value,
+        category: categoryField.value,
+      };
+
+      socket.emit("newProduct", product);
+    };
+
+    document.getElementById('addProductButton').addEventListener('click', addProduct);
+</script>
