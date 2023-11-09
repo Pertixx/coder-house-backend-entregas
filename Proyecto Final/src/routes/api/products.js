@@ -1,48 +1,24 @@
-import ProductManager from "../../helpers/productManager.js";
-import { Router } from "express";
+import {
+  addProductsController,
+  deleteProductsController,
+  getProductsByIdController,
+  getProductsController,
+  updateProductsController,
+} from "../../controllers/products.controller.js";
 
-const router = Router();
-const manager = new ProductManager("./src/store/products.json");
+import Routes from "../routes.js";
+import { uploaders } from "../../middlewares/multer.js";
 
-router.get("/", async (req, res) => {
-  const limit = req.query.limit;
-  const products = await manager.getProducts();
-  if (!limit) return res.status(200).json({ products });
-  const limitedProducts = products.slice(0, limit);
-  res.status(200).json({ limitedProducts });
-});
+export default class ProductsRoutes extends Routes {
+  init() {
+    this.get("/", ["USER", "ADMIN", "PREMIUM"], getProductsController);
 
-router.get("/:pid", async (req, res) => {
-  const product = await manager.getProductById(req.params.pid);
-  if (!product)
-    return res
-      .status(404)
-      .json({ error: `Product with pid ${req.params.pid} not found` });
-  res.status(200).json({ product });
-});
+    this.get("/:pid", ["USER", "ADMIN", "PREMIUM"], getProductsByIdController);
 
-router.post("/", async (req, res) => {
-  const response = await manager.addProduct(req.body);
-  if (!response.error) return res.status(200).json({ status: response.status });
-  res.status(400).json(response);
-});
+    this.post("/", ["ADMIN", "PREMIUM"], uploaders, addProductsController);
 
-router.put("/:pid", async (req, res) => {
-  const response = await manager.updateProduct(req.params.pid, req.body);
-  if (!response)
-    return res
-      .status(404)
-      .json({ error: `Product with pid ${req.params.pid} not found` });
-  res.status(200).json(response);
-});
+    this.put("/:pid", ["ADMIN", "PREMIUM"], updateProductsController);
 
-router.delete("/:pid", async (req, res) => {
-  const response = await manager.deleteProduct(req.params.pid);
-  if (!response)
-    return res
-      .status(404)
-      .json({ error: `Product with pid ${req.params.pid} not found` });
-  res.status(200).json(response);
-});
-
-export default router;
+    this.delete("/:pid", ["ADMIN", "PREMIUM"], deleteProductsController);
+  }
+}

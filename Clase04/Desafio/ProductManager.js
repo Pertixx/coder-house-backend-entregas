@@ -114,30 +114,30 @@ class ProductManager {
 
 //Tests
 
-const manager = new ProductManager("./products.json");
+// const manager = new ProductManager("./products.json");
 
-await manager.addProduct({
-  title: "Producto 1",
-  description: "Producto 1 description",
-  price: 1,
-  thumbnail: "ejemplo",
-  code: "abc123",
-  stock: 10,
-});
+// await manager.addProduct({
+//   title: "Producto 1",
+//   description: "Producto 1 description",
+//   price: 1,
+//   thumbnail: "ejemplo",
+//   code: "abc123",
+//   stock: 10,
+// });
 
-await manager.addProduct({
-  title: "Producto 2",
-  description: "Producto 2 description",
-  price: 2,
-  thumbnail: "ejemplo 2",
-  code: "abc124",
-  stock: 20,
-});
+// await manager.addProduct({
+//   title: "Producto 2",
+//   description: "Producto 2 description",
+//   price: 2,
+//   thumbnail: "ejemplo 2",
+//   code: "abc124",
+//   stock: 20,
+// });
 
-console.log(await manager.getProducts());
+// console.log(await manager.getProducts());
 
-console.log(await manager.getProductById(1));
+// console.log(await manager.getProductById(1));
 
-await manager.updateProduct(1, { title: "Probando 123" });
+// await manager.updateProduct(1, { title: "Probando 123" });
 
-await manager.deleteProduct(2);
+// await manager.deleteProduct(2);

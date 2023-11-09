@@ -1,42 +1,44 @@
-import CartsManager from "../../helpers/cartsManager.js";
-import ProductManager from "../../helpers/productManager.js";
-import { Router } from "express";
+import {
+  addCartController,
+  addProductToCartController,
+  deleteCartController,
+  deleteProductInCartController,
+  getCartController,
+  getPurchaseController,
+  updateProductToCartController,
+  updatedCartController,
+} from "../../controllers/carts.controller.js";
 
-const router = Router();
-const manager = new CartsManager("./src/store/carts.json");
-const productManager = new ProductManager("./src/store/products.json");
+import Routes from "../routes.js";
 
-router.post("/", async (req, res) => {
-  const response = await manager.createCart();
-  res.status(200).json(response);
-});
+export default class CartsRoutes extends Routes {
+  init() {
+    this.post("/", ["USER", "ADMIN", "PREMIUM"], addCartController);
 
-router.get("/:cid", async (req, res) => {
-  const cart = await manager.getCartById(req.params.cid);
-  if (!cart)
-    return res
-      .status(404)
-      .json({ error: `Cart with cid ${req.params.cid} not found` });
-  const products = cart.products;
-  res.status(200).json({ products });
-});
+    this.post(
+      "/:cid/product/:pid",
+      ["USER", "PREMIUM"],
+      addProductToCartController
+    );
 
-router.post("/:cid/product/:pid", async (req, res) => {
-  const cart = await manager.getCartById(req.params.cid);
-  if (!cart)
-    return res
-      .status(404)
-      .json({ error: `Cart with cid ${req.params.cid} not found` });
-  const product = await productManager.getProductById(req.params.pid);
-  if (!product)
-    return res
-      .status(404)
-      .json({ error: `Product with pid ${req.params.pid}` });
-  const response = await manager.addProductToCart(
-    req.params.cid,
-    req.params.pid
-  );
-  res.status(200).json(response);
-});
+    this.get("/:cid", ["USER", "ADMIN", "PREMIUM"], getCartController);
 
-export default router;
+    this.put(
+      "/:cid/product/:pid",
+      ["USER", "ADMIN", "PREMIUM"],
+      updateProductToCartController
+    );
+
+    this.put("/:cid", ["USER", "ADMIN", "PREMIUM"], updatedCartController);
+
+    this.delete("/:cid", ["USER", "ADMIN", "PREMIUM"], deleteCartController);
+
+    this.delete(
+      "/:cid/product/:pid",
+      ["USER", "PREMIUM"],
+      deleteProductInCartController
+    );
+
+    this.get("/:cid/purchase", ["USER", "PREMIUM"], getPurchaseController);
+  }
+}
